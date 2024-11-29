@@ -15,8 +15,9 @@ class Pacman(Singleton):
         self.direction = [0, 0]
         self.is_empowered = False
         self.score = 0
-        self.laberinto = Laberinto._instance # Como es un singleton, no se necesita instanciarlo
         self.rotation = 0
+
+        self.laberinto = Laberinto._instance # Como es un singleton, no se necesita instanciarlo
     
     def process_movement(self):
         direction_x = int(self.direction[0])

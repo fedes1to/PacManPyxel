@@ -51,26 +51,30 @@ class Laberinto(Singleton):
 
         self.grid_laberinto = [row + row[::-1] for row in self.grid_laberinto] # Rellenamos las zonas que faltan
 
-    def __init__(self, height, width):
+    def __init__(self, width, height, offset):
         self.reset_grid()
 
         self.grid_height = len(self.grid_laberinto) # Altura del laberinto
         self.grid_width = len(self.grid_laberinto[0]) # Anchura del laberinto
 
-        self.height = height
-        self.width = width
+        print("grid dimensions:", self.grid_width, "x", self.grid_height)
+        print("screen dimensions:", width, "x", height)
 
-        self._tile_size = width // self.grid_width / 2
+        self.width = width
+        self.height = height
+        self.offset = offset # distancia entre el techo y el laberinto
+
+        self._tile_size = width // self.grid_width
     
     def get_tile_at_position(self, x, y):
         x = int(x // 1)
         y = int(y // 1)
-        return self.grid_laberinto[y][x]
+        return self.grid_laberinto[y - self.offset][x]
     
     def empty_tile_at_position(self, x, y):
         x = int(x // 1)
         y = int(y // 1)
-        self.grid_laberinto[y][x] = 0
+        self.grid_laberinto[y - self.offset][x] = 0
 
     @property
     def tile_size(self) -> int:
@@ -84,22 +88,36 @@ class Laberinto(Singleton):
         pass
 
     def draw(self):
+        offset_in_pixels = self.tile_size * self.offset
+
         for y in range(self.grid_height):
             for x in range(self.grid_width):
                 tile = self.grid_laberinto[y][x]
-                if tile == 0:
-                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 0)
-                elif tile == 1:
-                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 7)
-                elif tile == 2:
-                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 8)
-                elif tile == 3:
-                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 9)
-                elif tile == 4:
-                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 1)
-                elif tile == 5:
-                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 2)
-                elif tile == 6:
-                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 10)
-                elif tile == 7:
-                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 11)
+                x_pos = x * self.tile_size
+                y_pos = y * self.tile_size + offset_in_pixels
+
+                match (tile):
+                    case 0: # Vacio
+                        pyxel.rect(x_pos, y_pos, self.tile_size, self.tile_size, 0)
+                    case 1: # Punto
+                        scale_factor = 0.25
+                        pyxel.rect(x_pos + (3 * self.tile_size * scale_factor / 2), y_pos + (3 * self.tile_size * scale_factor / 2), \
+                            self.tile_size * scale_factor, self.tile_size * scale_factor, 7)
+                    case 2: # Punto grande
+                        scale_factor = 0.75
+                        pyxel.rect(x_pos + (self.tile_size * scale_factor / 2), y_pos + (self.tile_size * scale_factor / 2), \
+                            self.tile_size * scale_factor, self.tile_size * scale_factor, 8)
+                    case 3: # Cereza
+                        pyxel.rect(x_pos, y_pos, self.tile_size, self.tile_size, 9)
+                    case 4: # Pared
+                        scale_factor = 0.5
+                        pyxel.rect(x_pos + (self.tile_size * scale_factor / 2), y_pos + (self.tile_size * scale_factor / 2), \
+                            self.tile_size * scale_factor, self.tile_size * scale_factor, 1)
+                    case 5: # Pared de fantasmas
+                        scale_factor = 0.5
+                        pyxel.rect(x_pos + (self.tile_size * scale_factor / 2), y_pos + (self.tile_size * scale_factor / 2), \
+                            self.tile_size * scale_factor, self.tile_size * scale_factor, 2)
+                    case 6: # Melon
+                        pyxel.rect(x_pos, y_pos, self.tile_size, self.tile_size, 10)
+                    case 7: # Fresa
+                        pyxel.rect(x_pos, y_pos, self.tile_size, self.tile_size, 11)
