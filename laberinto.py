@@ -62,6 +62,10 @@ class Laberinto(Singleton):
     
     def get_tile_at_position(self, pos):
         tile_pos = pos // self.tile_size
+        
+        if tile_pos.y - self.offset < 0 or tile_pos.y - self.offset >= len(self.grid_laberinto) or tile_pos.x < 0 or tile_pos.x >= len(self.grid_laberinto[0]):
+            return 0
+
         return self.grid_laberinto[tile_pos.y - self.offset][tile_pos.x]
     
     def empty_tile_at_position(self, pos):

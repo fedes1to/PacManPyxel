@@ -79,7 +79,7 @@ class Vector:
         return Vector(int(self.x // 1), int(self.y // 1))
     
     def normalized(self):
-        return self / abs(self)
+        return self / abs(self.magnitude())
     
     def distance_to(self, vector):
         return abs(self - vector)
@@ -107,3 +107,6 @@ class Vector:
 
     def magnitude(self):
         return (self.x ** 2 + self.y ** 2) ** 0.5
+
+    def __hash__(self):
+        return hash((self.x, self.y))
