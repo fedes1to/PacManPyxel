@@ -3,8 +3,8 @@ import pyxel
 from laberinto import Laberinto
 from singleton import Singleton
 
-P_HEIGHT = 8 # Altura del pacman
-P_WIDTH = 8 # Anchura del pacman
+P_HEIGHT = 16 # Altura del pacman
+P_WIDTH = 16 # Anchura del pacman
 
 class Pacman(Singleton):
 
@@ -16,6 +16,7 @@ class Pacman(Singleton):
         self.is_empowered = False
         self.score = 0
         self.laberinto = Laberinto._instance # Como es un singleton, no se necesita instanciarlo
+        self.rotation = 0
     
     def process_movement(self):
         direction_x = int(self.direction[0])
@@ -40,12 +41,16 @@ class Pacman(Singleton):
     def update(self):
         if pyxel.btn(pyxel.KEY_A):
             self.direction = [-1, 0]
+            self.rotation = 180
         elif pyxel.btn(pyxel.KEY_D):
             self.direction = [1, 0]
+            self.rotation = 0
         elif pyxel.btn(pyxel.KEY_W):
             self.direction = [0, -1]
+            self.rotation = 90
         elif pyxel.btn(pyxel.KEY_S):
             self.direction = [0, 1]
+            self.rotation = 270
 
         self.process_movement()
 
@@ -53,4 +58,7 @@ class Pacman(Singleton):
         self.y += self.speed * self.direction[1]
     
     def draw(self):
-        pyxel.rect(self.x - (P_HEIGHT / 2), self.y - (P_WIDTH / 2), P_HEIGHT, P_WIDTH, 9)
+        x_draw_pos = self.x - (P_WIDTH / 2)
+        y_draw_pos = self.y - (P_HEIGHT / 2)
+
+        pyxel.blt(x_draw_pos, y_draw_pos, 0, 0, 16, P_WIDTH, P_HEIGHT, colkey=0, rotate=self.rotation)

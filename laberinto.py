@@ -60,7 +60,7 @@ class Laberinto(Singleton):
         self.height = height
         self.width = width
 
-        self._tile_size = width // self.grid_width
+        self._tile_size = width // self.grid_width / 2
     
     def get_tile_at_position(self, x, y):
         x = int(x // 1)
@@ -84,4 +84,22 @@ class Laberinto(Singleton):
         pass
 
     def draw(self):
-        pass
+        for y in range(self.grid_height):
+            for x in range(self.grid_width):
+                tile = self.grid_laberinto[y][x]
+                if tile == 0:
+                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 0)
+                elif tile == 1:
+                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 7)
+                elif tile == 2:
+                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 8)
+                elif tile == 3:
+                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 9)
+                elif tile == 4:
+                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 1)
+                elif tile == 5:
+                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 2)
+                elif tile == 6:
+                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 10)
+                elif tile == 7:
+                    pyxel.rect(x * self.tile_size, y * self.tile_size, self.tile_size, self.tile_size, 11)
