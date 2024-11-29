@@ -3,8 +3,8 @@ import pyxel
 from laberinto import Laberinto
 from singleton import Singleton
 
-P_HEIGHT = 16 # Altura del pacman
-P_WIDTH = 16 # Anchura del pacman
+P_HEIGHT = 8 # Altura del pacman
+P_WIDTH = 8 # Anchura del pacman
 
 class Pacman(Singleton):
 
@@ -59,7 +59,7 @@ class Pacman(Singleton):
         self.y += self.speed * self.direction[1]
     
     def draw(self):
-        x_draw_pos = self.x - (P_WIDTH / 2)
-        y_draw_pos = self.y - (P_HEIGHT / 2)
+        x_draw_pos = self.x - self.laberinto.tile_size / 2
+        y_draw_pos = self.y - self.laberinto.tile_size / 2
 
         pyxel.blt(x_draw_pos, y_draw_pos, 0, 0, 16, P_WIDTH, P_HEIGHT, colkey=0, rotate=self.rotation)

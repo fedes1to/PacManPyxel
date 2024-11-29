@@ -19,7 +19,7 @@ class App:
 
         # Inicializamos clases "Singleton" (mirar singleton.py)
         self.laberinto = Laberinto(W_ANCHURA, W_ALTURA, H_OFFSET)
-        self.pacman = Pacman((W_ANCHURA / 2) , (W_ALTURA / 2), P_SPEED)
+        self.pacman = Pacman((W_ANCHURA / 2) , (W_ALTURA / 2) + (self.laberinto.tile_size * 3), P_SPEED)
 
         pyxel.run(self.update, self.draw)
 
