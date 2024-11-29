@@ -1,5 +1,6 @@
 import pyxel
 from singleton import Singleton
+from vector import Vector
 
 class Laberinto(Singleton):
 
@@ -51,47 +52,35 @@ class Laberinto(Singleton):
 
         self.grid_laberinto = [row + row[::-1] for row in self.grid_laberinto] # Rellenamos las zonas que faltan
 
-    def __init__(self, width, height, offset):
+    def __init__(self, dimensions, offset):
         self.reset_grid()
 
-        self.grid_height = len(self.grid_laberinto) # Altura del laberinto
-        self.grid_width = len(self.grid_laberinto[0]) # Anchura del laberinto
-
-        print("grid dimensions:", self.grid_width, "x", self.grid_height)
-        print("screen dimensions:", width, "x", height)
-
-        self.width = width
-        self.height = height
+        self.grid_dimensions = Vector(len(self.grid_laberinto[0]), len(self.grid_laberinto)) # Dimensiones del laberinto
+        self.dimensions = dimensions # Dimensiones de la pantalla
         self.offset = offset # distancia entre el techo y el laberinto
-
-        self._tile_size = width // self.grid_width
+        self._tile_size = dimensions.x // self.grid_dimensions.x
     
-    def get_tile_at_position(self, x, y):
-        x = int(x // 1)
-        y = int(y // 1)
-        return self.grid_laberinto[y - self.offset][x]
+    def get_tile_at_position(self, pos):
+        tile_pos = pos // self.tile_size
+        return self.grid_laberinto[tile_pos.y - self.offset][tile_pos.x]
     
-    def empty_tile_at_position(self, x, y):
-        x = int(x // 1)
-        y = int(y // 1)
-        self.grid_laberinto[y - self.offset][x] = 0
+    def empty_tile_at_position(self, pos):
+        tile_pos = pos // self.tile_size
+        self.grid_laberinto[tile_pos.y - self.offset][tile_pos.x] = 0
+    
+    def get_position_at_tile(self, pos):
+        tile_pos = pos // self.tile_size
+        return (tile_pos.x * 3/2 * self.tile_size, tile_pos.y * 3/2 * self.tile_size)
 
     @property
     def tile_size(self) -> int:
         return self._tile_size
-    
-    @tile_size.setter
-    def tile_size(self, value: int):
-        self._tile_size = value
-
-    def update(self):
-        pass
 
     def draw(self):
         offset_in_pixels = self.tile_size * self.offset
 
-        for y in range(self.grid_height):
-            for x in range(self.grid_width):
+        for y in range(self.grid_dimensions.y):
+            for x in range(self.grid_dimensions.x):
                 tile = self.grid_laberinto[y][x]
                 x_pos = x * self.tile_size
                 y_pos = y * self.tile_size + offset_in_pixels
