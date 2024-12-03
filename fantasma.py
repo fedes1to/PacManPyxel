@@ -25,7 +25,7 @@ class Fantasma:
 
         self.position += direction_vector * self.speed
 
-        if self.laberinto.get_tile_at_position(position) == 4:
+        if self.laberinto.get_tile_at_position(self.position) == 4:
             self.position -= direction_vector * self.speed
 
     def draw(self):
