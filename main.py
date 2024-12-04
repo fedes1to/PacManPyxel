@@ -17,10 +17,10 @@ class App:
         for column_number in range(2, len(self.laberinto.grid[0])):  # 2 = dos columnas de offset
             for line_number in range(len(self.laberinto.grid)):
                 if self.laberinto.grid[line_number][column_number] == 2:
-                    pyxel.rect(column_number * 8 + 3 - 16, line_number * 8 + 3, 2, 2, 2)  # -16 = dos columnas de offset
+                    pyxel.rect(column_number * 8 + 3 - 16, line_number * 8 + 3, 2, 2, 15)  # -16 = dos columnas de offset
                     dot_exists = True
                 elif self.laberinto.grid[line_number][column_number] == 3:
-                    pyxel.blt(column_number * 8 - 16, line_number * 8, 1, 224, 0, 8, 8, 0)  # -16 = dos columnas de offset
+                    pyxel.blt(column_number * 8 - 16, line_number * 8, 1, 224, 0, 8, 8)  # -16 = dos columnas de offset
                     dot_exists = True
         return dot_exists
 
@@ -37,7 +37,7 @@ class App:
             pyxel.text(2, 250, "Puntaje: " + str(self.pacman.score), 7)
             pyxel.text(2, 260, "Vidas: " + str(self.pacman.lives), 7)
             pyxel.text(2, 270, "Nivel: " + str(self.laberinto.level), 7)
-        elif (self.laberinto.level <= 3): # Si no es el último nivel
+        elif (self.laberinto.level < 3): # Si no es el último nivel
             self.laberinto.level += 1 # Pasamos al siguiente nivel
             self.pacman.set_pacman() # Reseteamos a Pac-Man
         else: # Si llega al último nivel
