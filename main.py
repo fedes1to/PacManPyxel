@@ -6,7 +6,7 @@ from laberinto import normal_direction
 class App:
     def __init__(self):
         pyxel.init(224, 280, "Pac-Man", 65, pyxel.KEY_ESCAPE, 4)
-        pyxel.load("theme.pyxres")
+        pyxel.load("assets/theme.pyxres")
         self.laberinto = Laberinto()
         self.pacman = Pacman(self.laberinto)
         pyxel.run(self.update, self.draw)

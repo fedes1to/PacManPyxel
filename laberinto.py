@@ -19,9 +19,9 @@ class Laberinto:
         self.level3_image = pyxel.Image(pyxel.width, pyxel.height)
 
         # Cargamos las imágenes de los niveles
-        self.level1_image.load(0, 0, "./nivel1.png")
-        self.level2_image.load(0, 0, "./nivel2.png")
-        self.level3_image.load(0, 0, "./nivel3.png")
+        self.level1_image.load(0, 0, "assets/nivel1.png")
+        self.level2_image.load(0, 0, "assets/nivel2.png")
+        self.level3_image.load(0, 0, "assets/nivel3.png")
 
         # Tablero de los niveles
         self.grid1 = [  # 0 = vacío, 1 = pared, 2 = punto, 3 = punto grande, 4 = pared atravesable por fantasmas
