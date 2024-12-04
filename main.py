@@ -2,14 +2,12 @@ import pyxel
 from laberinto import Laberinto
 from pacman import Pacman
 from laberinto import normal_direction
-from fantasma import Fantasma
 
 class App:
     def __init__(self):
-        pyxel.init(224, 280, "Pac-Man", 65, pyxel.KEY_ESCAPE, 3)
+        pyxel.init(224, 280, "Pac-Man", 65, pyxel.KEY_ESCAPE, 4)
         pyxel.load("assets/theme.pyxres")
         self.laberinto = Laberinto()
-        self.fantasma = Fantasma(self.laberinto, 112, 112, 0)
         self.pacman = Pacman(self.laberinto)
         pyxel.run(self.update, self.draw)
 
@@ -28,7 +26,6 @@ class App:
 
     def update(self):
         self.pacman.update()
-        self.fantasma.update()
 
     def draw(self):
         pyxel.cls(0)
@@ -37,7 +34,6 @@ class App:
         elif (self.draw_dots()): # Si hay puntos en el tablero
             pyxel.blt(0, 0, self.laberinto.level_image(), 0, 0, 224, 248, 0) # Dibujamos el mapa
             self.pacman.draw_pacman()
-            self.fantasma.draw_fantasma()
             pyxel.text(2, 250, "Puntaje: " + str(self.pacman.score), 7)
             pyxel.text(2, 260, "Vidas: " + str(self.pacman.lives), 7)
             pyxel.text(2, 270, "Nivel: " + str(self.laberinto.level), 7)
