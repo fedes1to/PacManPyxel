@@ -29,9 +29,9 @@ class Pacman:
         tile_y = {0: 49, 1: 33, 2: 17, 3: 1}
 
         if self.mouth == 0:
-            pyxel.blt(x, y, 1, 35, 1, 13, 13, 0)
+            pyxel.blt(x, y, 0, 35, 1, 13, 13, 0)
         else:
-            pyxel.blt(x, y, 1, tile_x[self.mouth], tile_y[self.direction], 13, 13, 0)
+            pyxel.blt(x, y, 0, tile_x[self.mouth], tile_y[self.direction], 13, 13, 0)
 
     def update(self):
         self.pacman_direction()

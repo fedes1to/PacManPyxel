@@ -20,7 +20,7 @@ class App:
                     pyxel.rect(column_number * 8 + 3 - 16, line_number * 8 + 3, 2, 2, 2)  # -16 = dos columnas de offset
                     dot_exists = True
                 elif self.laberinto.grid[line_number][column_number] == 3:
-                    pyxel.blt(column_number * 8 - 16, line_number * 8, 0, 224, 0, 8, 8, 0)  # -16 = dos columnas de offset
+                    pyxel.blt(column_number * 8 - 16, line_number * 8, 1, 224, 0, 8, 8, 0)  # -16 = dos columnas de offset
                     dot_exists = True
         return dot_exists
 
