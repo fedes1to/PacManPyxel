@@ -6,7 +6,7 @@ import time
 
 class App:
     def __init__(self):
-        pyxel.init(224, 260, "Pac-Man", 65, pyxel.KEY_ESCAPE, 4)
+        pyxel.init(224, 260, "Pac-Man", 65, pyxel.KEY_ESCAPE, 3)
         pyxel.load("assets/theme.pyxres")
         self.laberinto = Laberinto()
         self.pacman = Pacman(self.laberinto)
