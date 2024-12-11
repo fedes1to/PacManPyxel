@@ -175,13 +175,25 @@ class Laberinto:
             self.grid[y_grid][x_grid] = 0
             retval = 50
         return retval
+    
+    def check_cage(self, y_grid, x_grid):
+        if (y_grid == 23 and x_grid == 13): # Arreglo para el glitch del primer frame
+            return True
+        return y_grid > 12 and y_grid < 15 and x_grid > 13 and x_grid < 18
 
     # Comprueba si hay paredes en la dirección que se quiere mover
-    def check_walls(self, input_direction, direction, y_grid, x_grid):
+    def check_walls(self, input_direction, direction, y_grid, x_grid, is_ghost=False):
         x_offset, y_offset = normal_direction[input_direction]
         x_offset2, y_offset2 = normal_direction[direction]
 
-        if self.grid[y_grid + y_offset][x_grid + x_offset] != 1:
+        # Pac-Man no puede pasar por las paredes de los fantasmas
+        next_tile = self.grid[y_grid + y_offset][x_grid + x_offset]
+        current_tile = self.grid[y_grid + y_offset2][x_grid + x_offset2]
+        
+        is_wall = next_tile == 1 or (not is_ghost and next_tile == 4)
+        is_current_wall = current_tile == 1 or (not is_ghost and current_tile == 4)
+
+        if not is_wall:
             return 1
-        elif self.grid[y_grid + y_offset2][x_grid + x_offset2] == 1:
+        elif is_current_wall:
             return 2

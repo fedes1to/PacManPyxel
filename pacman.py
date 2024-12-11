@@ -43,6 +43,9 @@ class Pacman:
         self.pacman_direction()
         self.pacman_mouth()
 
+        if self.powered_time:
+            self.powered_time -= 1
+
         if self.x % 8 == 0 and self.y % 8 == 0: # Se revisa solo en el centro de la celda
             self.x_grid = self.x // 8 + 2  # +2 = 2 columnas de offset
             self.y_grid = self.y // 8
@@ -51,9 +54,11 @@ class Pacman:
             self.score += score_added # Nos comemos el bloque en el que estamos
 
             if score_added == 50: # Si nos hemos comido un punto grande
-                self.powered_time = 600 # 10 segundos de power-up (60FPS)
+                self.powered_time = 420 # 7 segundos de power-up (60FPS)
             
-            direction_result = self.laberinto.check_walls(self.input_direction, self.direction, self.y_grid, self.x_grid) # Revisamos colisiones
+            direction_result = self.laberinto.check_walls(self.input_direction, self.direction, \
+                                                          self.y_grid, self.x_grid, is_ghost=False) 
+            # Revisamos colisiones
             if direction_result == 1: # Si no hay colisiones
                 self.direction = self.input_direction
                 self.walking = True
