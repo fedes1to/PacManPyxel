@@ -54,7 +54,7 @@ class Frutas:
         if (pacman.y_grid, pacman.x_grid) in self._posicion_frutas:
             self._posicion_frutas.remove((pacman.y_grid, pacman.x_grid))
 
-            # Aumentamos el puntaje
+            # Aumentamos el puntaje dependiendo de la fruta
             if self.laberinto.grid[pacman.y_grid][pacman.x_grid] == 5:
                 pacman.score += 250
             elif self.laberinto.grid[pacman.y_grid][pacman.x_grid] == 6:

@@ -2,6 +2,7 @@ import pyxel
 from laberinto import Laberinto
 from pacman import Pacman
 from frutas import Frutas
+from fantasma import Fantasma
 import time
 
 class App:
@@ -11,6 +12,7 @@ class App:
         self.laberinto = Laberinto()
         self.pacman = Pacman(self.laberinto)
         self.frutas = Frutas(self.laberinto)
+        self.fantasma = Fantasma(self.laberinto, self.pacman)
         self.minutos_finales, self.segundos_finales = -1, -1
         pyxel.run(self.update, self.draw)
 
@@ -29,6 +31,7 @@ class App:
 
     def update(self):
         self.pacman.update()
+        self.fantasma.update()
         self.frutas.check_colision(self.pacman)
 
     def draw(self):
@@ -44,6 +47,7 @@ class App:
                 self.frutas.spawn_fruta(dots_left == 70)
             self.pacman.draw_pacman()
             self.frutas.draw_fruits()
+            self.fantasma.draw_fantasma()
             pyxel.text(2, 251, "Vidas: " + str(self.pacman.lives), 7)
             pyxel.text(40, 251, "Nivel: " + str(self.laberinto.level), 7)
             pyxel.text(80, 251, "Puntaje: " + str(self.pacman.score), 7)

@@ -1,6 +1,12 @@
 import pyxel
 from laberinto import normal_direction
 
+# Si llega al extremo del mapa lo teletransporta al otro extremo
+def teleportation(player): 
+    x = {2: 224, 3: -8}
+    if player.x <= -8 or player.x >= 224:
+        player.x = x[player.direction]
+
 class Pacman:
     def set_pacman(self):
         # Valores de pacman para resetear su estado y posición
@@ -55,8 +61,12 @@ class Pacman:
                 self.walking = False
             
 
-        self.teleportation()
-        self.pacman_movement()
+        teleportation(self)
+        # Movemos a Pac-Man
+        if self.walking:
+            offset_x, offset_y = normal_direction[self.direction]
+            self.x += offset_x
+            self.y += offset_y
     
     @property
     def score(self):
@@ -104,16 +114,3 @@ class Pacman:
         if self.powered_time:
             return True
         return False
-
-    # Si llega al extremo del mapa lo teletransporta al otro extremo
-    def teleportation(self): 
-        x = {2: 224, 3: -8}
-        if self.x <= -8 or self.x >= 224:
-            self.x = x[self.direction]
-
-    # Movimiento de pacman
-    def pacman_movement(self):
-        if self.walking:
-            offset_x, offset_y = normal_direction[self.direction]
-            self.x += offset_x
-            self.y += offset_y

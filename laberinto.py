@@ -11,7 +11,7 @@ normal_direction = {
 class Laberinto:
     # Clase que contiene los niveles del juego
     def __init__(self):
-        self._level = 3
+        self._level = 1
 
         # Creamos las instancias para cada imagen de los niveles
         self.level1_image = pyxel.Image(pyxel.width, pyxel.height)
