@@ -55,6 +55,7 @@ class Fantasma:
         random.shuffle(possible_directions)
 
         best_direction = None
+        # Calculamos la dirección que nos acerque mas a Pac-Man
         min_distance = float('inf')
 
         for direction in possible_directions:
@@ -62,11 +63,14 @@ class Fantasma:
             new_x, new_y = self.x_grid + offset_x, self.y_grid + offset_y
 
             if not self.laberinto.check_walls(direction, self.direction, self.y_grid, self.x_grid, is_ghost=True):
+                # Distancia = raiz de sus elementos al cuadrado
                 distance = (new_x - target_x) ** 2 + (new_y - target_y) ** 2
                 if distance < min_distance:
+                    # Si la distancia es menor, actualizamos la dirección
                     min_distance = distance
                     best_direction = direction
 
+        # Si encontramos una dirección válida, la devolvemos
         if best_direction is not None:
             return best_direction
 
