@@ -114,7 +114,6 @@ class Fantasma:
             return self.get_direction_pacman() # Persigue directamente a Pac-Man
         elif self.fantasma_type == 1:
             return self.get_direction_pacman(emboscada=True) # Intenta emboscar a Pac-Man
-        
         # Hacemos el patron mas errático metiendo movimientos random
         elif self.fantasma_type == 2:
             if random.randint(0, 3): # Hacemos que se retire menos que corte
@@ -175,6 +174,10 @@ class Fantasma:
 
 
     def draw_fantasma(self):
+        # Animación de los fantasmas
+        if (pyxel.frame_count % 10 == 0): # Cada 10 frames
+            self.animacion = random.randint(0, 3) # Cambiamos la animación
+
         # Mismos valores que pacman
         x = self.x - 2
         y = self.y - 3
