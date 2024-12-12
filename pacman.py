@@ -84,6 +84,10 @@ class Pacman:
     @property
     def lives(self):
         return self._lives
+    
+    @lives.setter
+    def lives(self, value):
+        self._lives = value
 
     def lose_life(self):
         self._lives -= 1 # Restamos la vida

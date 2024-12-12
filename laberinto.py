@@ -1,4 +1,5 @@
 import pyxel
+import random
 
 # Diccionario para los offsets de las direcciones (unitario)
 normal_direction = {
@@ -11,7 +12,7 @@ normal_direction = {
 class Laberinto:
     # Clase que contiene los niveles del juego
     def __init__(self):
-        self._level = 1
+        self._level = 3
 
         # Creamos las instancias para cada imagen de los niveles
         self.level1_image = pyxel.Image(pyxel.width, pyxel.height)
@@ -180,6 +181,20 @@ class Laberinto:
         if (y_grid == 23 and x_grid == 13): # Arreglo para el glitch del primer frame
             return True
         return y_grid > 12 and y_grid < 15 and x_grid > 13 and x_grid < 18
+
+    def get_random_pos(self):
+        # Encuentra las celdas vacías
+        empty_spaces = [(y, x) for y in range(len(self.grid)) for x in range(len(self.grid[0])) if self.grid[y][x] == 0]
+        
+        if empty_spaces:
+            y, x = 0, 0
+
+            # Evitamos los bordes del mapa y la prisión del centro.
+            while ((y < 1 or y > 29) or (x < 2 or x > 29) or (y < 17 and y > 11 and x > 11 and x < 20)):
+                y, x = random.choice(empty_spaces)
+            
+            return y, x
+        return None
 
     # Comprueba si hay paredes en la dirección que se quiere mover
     def check_walls(self, input_direction, direction, y_grid, x_grid, is_ghost=False):

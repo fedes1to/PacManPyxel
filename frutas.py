@@ -21,16 +21,10 @@ class Frutas:
         else:
             return # No spawnear más frutas
 
-        # Encuentra las celdas vacías
-        empty_spaces = [(y, x) for y in range(len(self.laberinto.grid)) for x in range(len(self.laberinto.grid[0])) if self.laberinto.grid[y][x] == 0]
+        pos = self.laberinto.get_random_pos()
         
-        if empty_spaces:
-            y, x = 0, 0
-
-            # Evitamos los bordes del mapa y la prisión del centro.
-            while ((y < 1 or y > 29) or (x < 2 or x > 29) or (y < 17 and y > 11 and x > 11 and x < 20)):
-                y, x = random.choice(empty_spaces)
-            
+        if pos:
+            y, x = pos
             self._posicion_frutas.append((y, x))
             
             fruit = random.randint(5, 8) # Las frutas van del 5 al 8

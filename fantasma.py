@@ -3,11 +3,20 @@ import pyxel
 from laberinto import normal_direction
 from pacman import teleportation
 import random
+import time
 
 class Fantasma:
     def set_fantasma(self):
         # Valores del fantasma para resetear su estado y posición
-        self.x = 112
+        # Cambiamos ligeramente la x para cada fantasma
+        if self.fantasma_type == 0:
+            self.x = 112
+        elif self.fantasma_type == 1:
+            self.x = 116
+        elif self.fantasma_type == 2:
+            self.x = 108
+        else:
+            self.x = 120
         self.y = 112
         self.x_grid = 13
         self.y_grid = 23
@@ -17,7 +26,16 @@ class Fantasma:
         self.is_scared = False
         self.in_cage = True
 
-    def __init__(self, laberinto, pacman): # Necesitamos una referencia al laberinto
+    def __init__(self, laberinto, pacman, fantasma_type): # Necesitamos una referencia al laberinto
+        """
+        TIPOS DE FANTASMA:
+        0 = Blinky
+        1 = Pinky
+        2 = Inky
+        3 = Clyde
+        """
+        self.fantasma_type = fantasma_type
+
         self.set_fantasma()
         self.pacman = pacman
         self.laberinto = laberinto
@@ -28,9 +46,15 @@ class Fantasma:
             return 1 # Salir de la carcel
         else:
             return random.choice([0, 1, 2, 3])
-        
+    
+    def is_touching_pacman(self):
+        return abs(self.x - self.pacman.x) < 8 and abs(self.y - self.pacman.y) < 8
+
     # Devuelve una direccion hacia Pac-Man
-    def get_direction_pacman(self, emboscada=False):
+    def get_direction_pacman(self, emboscada=False, scared=None):
+        if scared is None:
+            self.is_scared = scared
+        
         if self.in_cage:
             return 1  # Salir de la carcel
 
@@ -52,7 +76,6 @@ class Fantasma:
             target_x, target_y = pacman_x, pacman_y
 
         possible_directions = [0, 1, 2, 3]
-        random.shuffle(possible_directions)
 
         best_direction = None
         # Calculamos la dirección que nos acerque mas a Pac-Man
@@ -62,9 +85,12 @@ class Fantasma:
             offset_x, offset_y = normal_direction[direction]
             new_x, new_y = self.x_grid + offset_x, self.y_grid + offset_y
 
+            # Si no hay paredes en la dirección que estamos mirando
             if not self.laberinto.check_walls(direction, self.direction, self.y_grid, self.x_grid, is_ghost=True):
                 # Distancia = raiz de sus elementos al cuadrado
                 distance = (new_x - target_x) ** 2 + (new_y - target_y) ** 2
+                if scared:
+                    distance = -distance  # Invertimos la distancia si el fantasma está asustado
                 if distance < min_distance:
                     # Si la distancia es menor, actualizamos la dirección
                     min_distance = distance
@@ -74,16 +100,50 @@ class Fantasma:
         if best_direction is not None:
             return best_direction
 
-        # Si no hay dirección válida, devolvemos la dirección anterior
-        return self.direction
+        # Si no hay dirección válida, devolvemos una dirección aleatoria
+        return self.get_direction_random()
+
+    def get_direction(self):
+        """
+        0 = Blinky (Persigue directamente a Pac-Man)
+        1 = Pinky (Intenta emboscar a Pac-Man)
+        2 = Inky (Cortando / Retirandose)
+        3 = Clyde (A veces se acerca a Pac-Man, a veces se aleja)
+        """
+        if self.fantasma_type == 0:
+            return self.get_direction_pacman() # Persigue directamente a Pac-Man
+        elif self.fantasma_type == 1:
+            return self.get_direction_pacman(emboscada=True) # Intenta emboscar a Pac-Man
+        
+        # Hacemos el patron mas errático metiendo movimientos random
+        elif self.fantasma_type == 2:
+            if random.randint(0, 3): # Hacemos que se retire menos que corte
+                return self.get_direction_pacman(emboscada=True) # Cortando
+            else:
+                return self.get_direction_pacman(scared=True) # Retirandose
+        elif self.fantasma_type == 3:
+            if random.randint(0, 3): # Hacemos que se retire menos que corte
+                return self.get_direction_pacman() # Acerca a Pac-Man
+            else:
+                return self.get_direction_pacman(scared=True) # Aleja
+
 
     def update(self):
+
+        if (self.pacman.powered() and self.is_touching_pacman()):
+            time.sleep(0.25) # Esperamos un tiempo para que el jugador pueda ver que se lo comió
+            self.set_fantasma()
+            self.pacman.score += 200 # 200 puntos por comerse un fantasma
+        elif (self.is_touching_pacman() and not self.is_scared):
+            time.sleep(1) # Esperamos un segundo para que el jugador murió
+            self.pacman.lose_life()
+
         if (self.in_cage): # Lo echamos de la carcel primero
             self.in_cage = self.laberinto.check_cage(self.y_grid, self.x_grid)
 
         self.is_scared = self.pacman.powered_time > 0
 
-        self.input_direction = self.get_direction_pacman()
+        self.input_direction = self.get_direction()
 
         if self.x % 8 == 0 and self.y % 8 == 0: # Se revisa solo en el centro de la celda
             self.x_grid = self.x // 8 + 2  # +2 = 2 columnas de offset
@@ -108,6 +168,8 @@ class Fantasma:
         teleportation(self)
         if self.walking:
             offset_x, offset_y = normal_direction[self.direction]
+
+            # Movemos al fantasma pero un poco más lento que Pac-Man
             self.x += offset_x
             self.y += offset_y
 
