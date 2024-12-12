@@ -56,43 +56,43 @@ class App:
             # Inicializamos el tiempo final
             self.get_final_time()
 
-            pyxel.text(100, 50, "GAME OVER", 7)
-            pyxel.text(100, 70, "Tiempo: " + str(self.minutos_finales) + "m " + str(self.segundos_finales) + "s", 7)
-            pyxel.text(100, 80, "Puntaje: " + str(self.pacman.score), 7)
+            pyxel.text(130, 30, "GAME OVER", 7)
+            pyxel.text(130, 50, "Tiempo: " + str(self.minutos_finales) + "m " + str(self.segundos_finales) + "s", 7)
+            pyxel.text(130, 60, "Puntaje: " + str(self.pacman.score), 7)
             pyxel.blt(75, 150, 0, 144, 16, 32, 32, scale=4, rotate=45, colkey=0) # El Pac-Man del final
         else:
             dots_left = self.draw_dots()
-        
-        if dots_left > 0: # Si hay puntos en el tablero
-            pyxel.blt(0, 0, self.laberinto.level_image(), 0, 0, 224, 248, 0) # Dibujamos el mapa
-            # Si se ha comido una cantidad de puntos y no hay frutas en el tablero
-            if ((dots_left == 70 or dots_left == 170) and (len(self.frutas.posicion_frutas) == 0)):
-                # Spawneamos una fruta aleatoria
-                self.frutas.spawn_fruta(dots_left == 70)
-            self.pacman.draw_pacman()
-            self.frutas.draw_fruits()
-            for fantasma in self.fantasmas:
-                fantasma.draw_fantasma()
-            pyxel.text(2, 251, "Vidas: " + str(self.pacman.lives), 7)
-            pyxel.text(40, 251, "Nivel: " + str(self.laberinto.level), 7)
-            pyxel.text(80, 251, "Puntaje: " + str(self.pacman.score), 7)
-        elif (self.laberinto.level < 3): # Si no es el último nivel
-            time.sleep(2) # Esperamos 2 segundos para que la transición sea más suave
-            self.laberinto.level += 1 # Pasamos al siguiente nivel
-            self.pacman.set_pacman() # Reseteamos a Pac-Man
-            for fantasma in self.fantasmas:
-                fantasma.set_fantasma()
-            self.frutas.reset_frutas() # Reseteamos las frutas
-        # Si llega al último nivel y no está Pac-Man muerto
-        elif (self.laberinto.level == 3 and dots_left != -1):
-            # Inicializamos el tiempo final
-            self.get_final_time()
-            
-            pyxel.text(100, 50, "HAS GANADO !!!", 7)
-            pyxel.text(100, 60, "Vidas: " + str(self.pacman.lives), 7)
-            pyxel.text(100, 70, "Tiempo: " + str(self.minutos_finales) + "m " + str(self.segundos_finales) + "s", 7)
-            pyxel.text(100, 80, "Puntaje: " + str(self.pacman.score), 7)
-            pyxel.blt(75, 150, 0, 32, 16, 32, 32, scale=4, rotate=45, colkey=0) # El Pac-Man del final
+
+            if dots_left > 0: # Si hay puntos en el tablero
+                pyxel.blt(0, 0, self.laberinto.level_image(), 0, 0, 224, 248, 0) # Dibujamos el mapa
+                # Si se ha comido una cantidad de puntos y no hay frutas en el tablero
+                if ((dots_left == 70 or dots_left == 170) and (len(self.frutas.posicion_frutas) == 0)):
+                    # Spawneamos una fruta aleatoria
+                    self.frutas.spawn_fruta(dots_left == 70)
+                self.pacman.draw_pacman()
+                self.frutas.draw_fruits()
+                for fantasma in self.fantasmas:
+                    fantasma.draw_fantasma()
+                pyxel.text(2, 251, "Vidas: " + str(self.pacman.lives), 7)
+                pyxel.text(40, 251, "Nivel: " + str(self.laberinto.level), 7)
+                pyxel.text(80, 251, "Puntaje: " + str(self.pacman.score), 7)
+            elif (self.laberinto.level < 3): # Si no es el último nivel
+                time.sleep(2) # Esperamos 2 segundos para que la transición sea más suave
+                self.laberinto.level += 1 # Pasamos al siguiente nivel
+                self.pacman.set_pacman() # Reseteamos a Pac-Man
+                for fantasma in self.fantasmas:
+                    fantasma.set_fantasma()
+                self.frutas.reset_frutas() # Reseteamos las frutas
+            # Si llega al último nivel y no está Pac-Man muerto
+            elif (self.laberinto.level == 3 and dots_left != -1):
+                # Inicializamos el tiempo final
+                self.get_final_time()
+                
+                pyxel.text(100, 50, "HAS GANADO !!!", 7)
+                pyxel.text(100, 60, "Vidas: " + str(self.pacman.lives), 7)
+                pyxel.text(100, 70, "Tiempo: " + str(self.minutos_finales) + "m " + str(self.segundos_finales) + "s", 7)
+                pyxel.text(100, 80, "Puntaje: " + str(self.pacman.score), 7)
+                pyxel.blt(75, 150, 0, 32, 16, 32, 32, scale=4, rotate=45, colkey=0) # El Pac-Man del final
 
 
 App()
