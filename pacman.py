@@ -1,4 +1,5 @@
 import pyxel
+import time
 from laberinto import normal_direction
 
 # Si llega al extremo del mapa lo teletransporta al otro extremo
@@ -20,6 +21,7 @@ class Pacman:
         self.mouth = 2
         self.i_mouth = 0
         self.powered_time = False
+        self.is_dying = False
 
     def __init__(self, laberinto): # Necesitamos una referencia al laberinto
         self.set_pacman()
@@ -34,7 +36,10 @@ class Pacman:
         tile_x = {1: 19, 2: 3}
         tile_y = {0: 49, 1: 33, 2: 17, 3: 1}
 
-        if self.mouth == 0:
+        if self.is_dying:
+            pyxel.blt(x, y, 0, 208, 0, 13, 13, 0)
+            self._lives -= 1 # Restamos la vida
+        elif self.mouth == 0:
             pyxel.blt(x, y, 0, 35, 1, 13, 13, 0)
         else:
             pyxel.blt(x, y, 0, tile_x[self.mouth], tile_y[self.direction], 13, 13, 0)
@@ -42,6 +47,10 @@ class Pacman:
     def update(self):
         self.pacman_direction()
         self.pacman_mouth()
+
+        if self.is_dying:
+            time.sleep(1) # Esperamos un segundo para que el jugador murió
+            self.set_pacman() # Reseteamos el estado de Pac-Man
 
         if self.powered_time:
             self.powered_time -= 1
@@ -88,12 +97,6 @@ class Pacman:
     @lives.setter
     def lives(self, value):
         self._lives = value
-
-    def lose_life(self):
-        self._lives -= 1 # Restamos la vida
-
-        # Reseteamos el estado de Pac-Man
-        self.set_pacman()
 
     def pacman_direction(self):
         # Diccionario con las direcciones de pacman

@@ -5,10 +5,17 @@ from pacman import teleportation
 import random
 import time
 
+sprite_x = (0, 16, 32, 48, 64, 80, 96, 112) # Animación de los fantasmas
+sprite_y = (64, 80, 96, 112) # por cada tipo de fantasma
+sprite_scared_x = (
+                    (128, 144), # Animación de los fantasmas asustados (Azules)
+                    (160, 176)  # Animación de los fantasmas asustados (Blancos)
+                   ) 
+
 class Fantasma:
     def set_fantasma(self):
         # Valores del fantasma para resetear su estado y posición
-        # Cambiamos ligeramente la x para cada fantasma
+        # Cambiamos ligeramente la x inicial para cada fantasma
         if self.fantasma_type == 0:
             self.x = 112
         elif self.fantasma_type == 1:
@@ -25,6 +32,7 @@ class Fantasma:
         self.walking = True
         self.is_scared = False
         self.in_cage = True
+        self.is_dying = False
 
     def __init__(self, laberinto, pacman, fantasma_type): # Necesitamos una referencia al laberinto
         """
@@ -35,6 +43,12 @@ class Fantasma:
         3 = Clyde
         """
         self.fantasma_type = fantasma_type
+
+        # Para dibujar el sprite de asustado
+        if self.fantasma_type == 0 or self.fantasma_type == 1:
+            self.scared_type = 0
+        else:
+            self.scared_type = 1
 
         self.set_fantasma()
         self.pacman = pacman
@@ -53,7 +67,7 @@ class Fantasma:
     # Devuelve una direccion hacia Pac-Man
     def get_direction_pacman(self, emboscada=False, scared=None):
         if scared is None:
-            self.is_scared = scared
+            scared = self.is_scared
         
         if self.in_cage:
             return 1  # Salir de la carcel
@@ -129,13 +143,15 @@ class Fantasma:
 
     def update(self):
 
-        if (self.pacman.powered() and self.is_touching_pacman()):
+        if self.is_dying:
             time.sleep(0.25) # Esperamos un tiempo para que el jugador pueda ver que se lo comió
-            self.set_fantasma()
             self.pacman.score += 200 # 200 puntos por comerse un fantasma
+            self.set_fantasma() # Reseteamos al fantasma
+
+        if (self.pacman.powered() and self.is_touching_pacman()):
+            self.is_dying = True
         elif (self.is_touching_pacman() and not self.is_scared):
-            time.sleep(1) # Esperamos un segundo para que el jugador murió
-            self.pacman.lose_life()
+            self.pacman.is_dying = True
 
         if (self.in_cage): # Lo echamos de la carcel primero
             self.in_cage = self.laberinto.check_cage(self.y_grid, self.x_grid)
@@ -174,12 +190,19 @@ class Fantasma:
 
 
     def draw_fantasma(self):
-        # Animación de los fantasmas
-        if (pyxel.frame_count % 10 == 0): # Cada 10 frames
-            self.animacion = random.randint(0, 3) # Cambiamos la animación
-
         # Mismos valores que pacman
         x = self.x - 2
         y = self.y - 3
 
-        pyxel.rect(x, y, 13, 13, 1)
+        if (pyxel.frame_count % 20 == 0): # Cada 20 frames
+            self.scared_animacion = random.randint(0, 1) # Cambiamos la animación de los fantasmas asustados
+            self.animacion = random.randint(0, 5) # Cambiamos la animación
+
+        if self.is_dying:
+            pyxel.blt(x, y, 0, 131, 81, 13, 13, 0) # Sprite ojos fantasma
+        else:
+            if self.is_scared:
+                pyxel.blt(x, y, 0, sprite_scared_x[self.scared_type][self.scared_animacion] + 3, 65, 13, 13, 0)
+            else:
+                # Animación de los fantasmas
+                pyxel.blt(x, y, 0, sprite_x[self.animacion] + 3, sprite_y[self.fantasma_type] + 1, 13, 13, 0)
