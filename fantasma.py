@@ -58,7 +58,7 @@ class Fantasma:
             return random.choice([0, 1, 2, 3])
     
     def is_touching_pacman(self):
-        if True:# self.pacman.invulnerability_time > 0: # Protección de spawn
+        if self.pacman.invulnerability_time > 0: # Protección de spawn
             return False
         return abs(self.x - self.pacman.x) < 8 and abs(self.y - self.pacman.y) < 8
 
