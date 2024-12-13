@@ -58,7 +58,9 @@ class Frutas:
             elif self.laberinto.grid[pacman.y_grid][pacman.x_grid] == 8:
                 pacman.score += 400
 
-            self.laberinto.grid[pacman.y_grid][pacman.x_grid] = 0
+            self.laberinto.grid[pacman.y_grid][pacman.x_grid] = 0 # Eliminamos la fruta del tablero
+            pyxel.play(3, 5) # Sonido de comerse a la fruta
+
             return True
         return False
 

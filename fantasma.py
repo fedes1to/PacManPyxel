@@ -45,11 +45,7 @@ class Fantasma:
         self.fantasma_type = fantasma_type
 
         # Para dibujar el sprite de asustado
-        if self.fantasma_type == 0 or self.fantasma_type == 1:
-            self.scared_type = 0
-        else:
-            self.scared_type = 1
-
+        self.scared_type = 0
         self.set_fantasma()
         self.pacman = pacman
         self.laberinto = laberinto
@@ -62,6 +58,8 @@ class Fantasma:
             return random.choice([0, 1, 2, 3])
     
     def is_touching_pacman(self):
+        if True:# self.pacman.invulnerability_time > 0: # Protección de spawn
+            return False
         return abs(self.x - self.pacman.x) < 8 and abs(self.y - self.pacman.y) < 8
 
     # Devuelve una direccion hacia Pac-Man
@@ -150,8 +148,10 @@ class Fantasma:
 
         if (self.pacman.powered() and self.is_touching_pacman()):
             self.is_dying = True
+            pyxel.play(3, 5) # Sonido de comerse al fantasma
         elif (self.is_touching_pacman() and not self.is_scared):
             self.pacman.is_dying = True
+            pyxel.play(3, 8) # Sonido de morir
 
         if (self.in_cage): # Lo echamos de la carcel primero
             self.in_cage = self.laberinto.check_cage(self.y_grid, self.x_grid)
@@ -194,7 +194,13 @@ class Fantasma:
         x = self.x - 2
         y = self.y - 3
 
-        if (pyxel.frame_count % 20 == 0): # Cada 20 frames
+        if pyxel.frame_count % 20 == 0: # Cada 20 frames
+            # Si el tiempo de power-up es menor a 3 segundos
+            if self.pacman.powered_time < 180 and self.pacman.powered_time > 0:
+                self.scared_type = not self.scared_type # Cambiamos el tipo de fantasma asustado
+                pyxel.play(3, 6) # Sonido cuando al fantasma le queda poco tiempo
+            else:
+                self.scared_type = 0
             self.scared_animacion = random.randint(0, 1) # Cambiamos la animación de los fantasmas asustados
             self.animacion = random.randint(0, 5) # Cambiamos la animación
 

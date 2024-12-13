@@ -20,14 +20,27 @@ class Pacman:
         self.walking = True
         self.mouth = 2
         self.i_mouth = 0
-        self.powered_time = False
+        self._powered_time = False
         self.is_dying = False
+        self._invulnerability_time = 180 # 180 / 60FPS = 3 segundos
 
     def __init__(self, laberinto): # Necesitamos una referencia al laberinto
         self.set_pacman()
         self.laberinto = laberinto
         self._score = 0
         self._lives = 3
+
+    @property
+    def invulnerability_time(self):
+        return self._invulnerability_time
+
+    @property
+    def powered_time(self):
+        return self._powered_time
+    
+    @powered_time.setter
+    def powered_time(self, value):
+        self._powered_time = value
 
     def draw_pacman(self):
         x = self.x - 2
@@ -55,6 +68,9 @@ class Pacman:
         if self.powered_time:
             self.powered_time -= 1
 
+        if self.invulnerability_time:
+            self._invulnerability_time -= 1
+
         if self.x % 8 == 0 and self.y % 8 == 0: # Se revisa solo en el centro de la celda
             self.x_grid = self.x // 8 + 2  # +2 = 2 columnas de offset
             self.y_grid = self.y // 8
@@ -81,7 +97,10 @@ class Pacman:
             offset_x, offset_y = normal_direction[self.direction]
             self.x += offset_x
             self.y += offset_y
-    
+
+            if pyxel.frame_count % 20 == 0:
+                pyxel.play(2, 4)
+
     @property
     def score(self):
         return self._score
