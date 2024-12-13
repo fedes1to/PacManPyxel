@@ -12,7 +12,7 @@ class Pacman:
     def set_pacman(self):
         # Valores de pacman para resetear su estado y posición
         self.x = 104
-        self.y = 184
+        self.y = 1849
         self.x_grid = 13
         self.y_grid = 23
         self.input_direction = 2
