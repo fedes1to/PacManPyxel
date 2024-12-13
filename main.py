@@ -14,6 +14,11 @@ class App:
         self.frutas = Frutas(self.laberinto)
         self.fantasmas = []
 
+        # Variables para la música
+        self.play_music = False
+        self.changed_level = False
+        self.final_music = False
+
         # Inicializamos los 4 fantasmas
         for i in range(4):
             self.fantasmas.append(Fantasma(self.laberinto, self.pacman, i))
@@ -35,10 +40,25 @@ class App:
         return dot_number
 
     def update(self):
-        self.pacman.update()
-        for fantasma in self.fantasmas:
-            fantasma.update()
-        self.frutas.check_colision(self.pacman)
+        if not self.final_music:
+            # Actualizamos si no estamos en una pantalla final
+            self.pacman.update()
+            for fantasma in self.fantasmas:
+                fantasma.update()
+            self.frutas.check_colision(self.pacman)
+        elif pyxel.btnp(pyxel.KEY_R):
+            # Reseteamos el juego
+            self.pacman.lives = 3
+            self.pacman.score = 0
+            self.laberinto.level = 1
+            self.pacman.set_pacman()
+            for fantasma in self.fantasmas:
+                fantasma.set_fantasma()
+            self.frutas.reset_frutas()
+            self.laberinto.reset_grids()
+            # Reseteamos la música
+            self.final_music = False
+            self.changed_level = True
 
     def get_final_time(self):
         if (self.minutos_finales == -1 or self.segundos_finales == -1):
@@ -51,19 +71,50 @@ class App:
 
         dots_left = -1
 
+        if pyxel.frame_count == 1 or self.play_music: # En el segundo frame
+            pyxel.playm(0) # Reproducimos la música de inicio 
+            time.sleep(4) # Esperamos 4 segundos para que termine la música
+            self.play_music = False
+
+        if self.changed_level:
+            # Hacemos esto para que haya un frame de diferencia y así se ve el mapa
+            self.play_music = True
+            self.changed_level = False
+
         # Escena de Game Over
         if (self.pacman.lives < 1): # Si pacman no tiene vidas
             # Inicializamos el tiempo final
             self.get_final_time()
-
             pyxel.text(130, 30, "GAME OVER", 7)
             pyxel.text(130, 50, "Tiempo: " + str(self.minutos_finales) + "m " + str(self.segundos_finales) + "s", 7)
             pyxel.text(130, 60, "Puntaje: " + str(self.pacman.score), 7)
+            pyxel.text(130, 70, "Nivel: " + str(self.laberinto.level), 7)
+            pyxel.text(130, 90, "Presiona R\npara reiniciar", 7)
             pyxel.blt(75, 150, 0, 144, 16, 32, 32, scale=4, rotate=45, colkey=0) # El Pac-Man del final
+
+            if not self.final_music:
+                pyxel.play(0, 7) # Sonido de derrota
+                self.final_music = True
         else:
             dots_left = self.draw_dots()
 
-            if dots_left > 0: # Si hay puntos en el tablero
+            # Si llega al final y no está Pac-Man muerto
+            if (self.laberinto.level == 3 and dots_left == 0):
+                # Inicializamos el tiempo final
+                self.get_final_time()
+                
+                pyxel.text(100, 50, "HAS GANADO !!!", 7)
+                pyxel.text(100, 60, "Vidas: " + str(self.pacman.lives), 7)
+                pyxel.text(100, 70, "Tiempo: " + str(self.minutos_finales) + "m " + str(self.segundos_finales) + "s", 7)
+                pyxel.text(100, 80, "Puntaje: " + str(self.pacman.score), 7)
+                pyxel.text(100, 100, "Presiona R\npara reiniciar", 7)
+                pyxel.blt(75, 150, 0, 32, 16, 32, 32, scale=4, rotate=45, colkey=0) # El Pac-Man del final
+                
+                if not self.final_music:
+                    pyxel.play(0, 9) # Sonido de victoria
+                    self.final_music = True
+                    
+            elif dots_left > 0: # Si hay puntos en el tablero
                 pyxel.blt(0, 0, self.laberinto.level_image(), 0, 0, 224, 248, 0) # Dibujamos el mapa
                 # Si se ha comido una cantidad de puntos y no hay frutas en el tablero
                 if ((dots_left == 70 or dots_left == 170) and (len(self.frutas.posicion_frutas) == 0)):
@@ -77,22 +128,12 @@ class App:
                 pyxel.text(40, 251, "Nivel: " + str(self.laberinto.level), 7)
                 pyxel.text(80, 251, "Puntaje: " + str(self.pacman.score), 7)
             elif (self.laberinto.level < 3): # Si no es el último nivel
-                time.sleep(2) # Esperamos 2 segundos para que la transición sea más suave
                 self.laberinto.level += 1 # Pasamos al siguiente nivel
                 self.pacman.set_pacman() # Reseteamos a Pac-Man
                 for fantasma in self.fantasmas:
                     fantasma.set_fantasma()
                 self.frutas.reset_frutas() # Reseteamos las frutas
-            # Si llega al último nivel y no está Pac-Man muerto
-            elif (self.laberinto.level == 3 and dots_left != -1):
-                # Inicializamos el tiempo final
-                self.get_final_time()
-                
-                pyxel.text(100, 50, "HAS GANADO !!!", 7)
-                pyxel.text(100, 60, "Vidas: " + str(self.pacman.lives), 7)
-                pyxel.text(100, 70, "Tiempo: " + str(self.minutos_finales) + "m " + str(self.segundos_finales) + "s", 7)
-                pyxel.text(100, 80, "Puntaje: " + str(self.pacman.score), 7)
-                pyxel.blt(75, 150, 0, 32, 16, 32, 32, scale=4, rotate=45, colkey=0) # El Pac-Man del final
-
+                self.changed_level = True
 
 App()
+

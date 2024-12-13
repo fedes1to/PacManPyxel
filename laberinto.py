@@ -11,19 +11,7 @@ normal_direction = {
 
 class Laberinto:
     # Clase que contiene los niveles del juego
-    def __init__(self):
-        self._level = 1 # Nivel inicial
-
-        # Creamos las instancias para cada imagen de los niveles
-        self.level1_image = pyxel.Image(pyxel.width, pyxel.height)
-        self.level2_image = pyxel.Image(pyxel.width, pyxel.height)
-        self.level3_image = pyxel.Image(pyxel.width, pyxel.height)
-
-        # Cargamos las imágenes de los niveles
-        self.level1_image.load(0, 0, "assets/nivel1.png")
-        self.level2_image.load(0, 0, "assets/nivel2.png")
-        self.level3_image.load(0, 0, "assets/nivel3.png")
-
+    def reset_grids(self):
         """
         Tablero de los niveles
         
@@ -33,7 +21,7 @@ class Laberinto:
         2 = punto, 
         3 = punto grande, 
         4 = pared atravesable por fantasmas
-
+        FRUTAS:
         5 = fresa
         6 = cereza
         7 = manzana
@@ -140,6 +128,21 @@ class Laberinto:
             [1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ]
+
+    def __init__(self):
+        self._level = 1 # Nivel inicial
+
+        # Creamos las instancias para cada imagen de los niveles
+        self.level1_image = pyxel.Image(pyxel.width, pyxel.height)
+        self.level2_image = pyxel.Image(pyxel.width, pyxel.height)
+        self.level3_image = pyxel.Image(pyxel.width, pyxel.height)
+
+        # Cargamos las imágenes de los niveles
+        self.level1_image.load(0, 0, "assets/nivel1.png")
+        self.level2_image.load(0, 0, "assets/nivel2.png")
+        self.level3_image.load(0, 0, "assets/nivel3.png")
+
+        self.reset_grids()
     
 
     @property
