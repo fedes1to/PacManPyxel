@@ -73,6 +73,7 @@ class App:
             pyxel.text(130, 30, "GAME OVER", 7)
             pyxel.text(130, 50, "Tiempo: " + str(self.minutos_finales) + "m " + str(self.segundos_finales) + "s", 7)
             pyxel.text(130, 60, "Puntaje: " + str(self.pacman.score), 7)
+            pyxel.text(130, 70, "Nivel: " + str(self.laberinto.level), 7)
             pyxel.blt(75, 150, 0, 144, 16, 32, 32, scale=4, rotate=45, colkey=0) # El Pac-Man del final
 
             if not self.final_music:
