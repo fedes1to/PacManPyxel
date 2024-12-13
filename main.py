@@ -40,10 +40,25 @@ class App:
         return dot_number
 
     def update(self):
-        self.pacman.update()
-        for fantasma in self.fantasmas:
-            fantasma.update()
-        self.frutas.check_colision(self.pacman)
+        if not self.final_music:
+            # Actualizamos si no estamos en una pantalla final
+            self.pacman.update()
+            for fantasma in self.fantasmas:
+                fantasma.update()
+            self.frutas.check_colision(self.pacman)
+        elif pyxel.btnp(pyxel.KEY_R):
+            # Reseteamos el juego
+            self.pacman.lives = 3
+            self.pacman.score = 0
+            self.laberinto.level = 1
+            self.pacman.set_pacman()
+            for fantasma in self.fantasmas:
+                fantasma.set_fantasma()
+            self.frutas.reset_frutas()
+            self.laberinto.reset_grids()
+            # Reseteamos la música
+            self.final_music = False
+            self.changed_level = True
 
     def get_final_time(self):
         if (self.minutos_finales == -1 or self.segundos_finales == -1):
@@ -74,6 +89,7 @@ class App:
             pyxel.text(130, 50, "Tiempo: " + str(self.minutos_finales) + "m " + str(self.segundos_finales) + "s", 7)
             pyxel.text(130, 60, "Puntaje: " + str(self.pacman.score), 7)
             pyxel.text(130, 70, "Nivel: " + str(self.laberinto.level), 7)
+            pyxel.text(130, 90, "Presiona R\npara reiniciar", 7)
             pyxel.blt(75, 150, 0, 144, 16, 32, 32, scale=4, rotate=45, colkey=0) # El Pac-Man del final
 
             if not self.final_music:
@@ -91,6 +107,7 @@ class App:
                 pyxel.text(100, 60, "Vidas: " + str(self.pacman.lives), 7)
                 pyxel.text(100, 70, "Tiempo: " + str(self.minutos_finales) + "m " + str(self.segundos_finales) + "s", 7)
                 pyxel.text(100, 80, "Puntaje: " + str(self.pacman.score), 7)
+                pyxel.text(100, 100, "Presiona R\npara reiniciar", 7)
                 pyxel.blt(75, 150, 0, 32, 16, 32, 32, scale=4, rotate=45, colkey=0) # El Pac-Man del final
                 
                 if not self.final_music:

@@ -17,11 +17,11 @@ class Fantasma:
         # Valores del fantasma para resetear su estado y posición
         # Cambiamos ligeramente la x inicial para cada fantasma
         if self.fantasma_type == 0:
-            self.x = 112
+            self.x = 105
         elif self.fantasma_type == 1:
-            self.x = 116
+            self.x = 110
         elif self.fantasma_type == 2:
-            self.x = 108
+            self.x = 115
         else:
             self.x = 120
         self.y = 112
